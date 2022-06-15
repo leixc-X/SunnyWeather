@@ -1,6 +1,7 @@
 package com.example.sunnyweather.logic
 
 import androidx.lifecycle.liveData
+import com.example.sunnyweather.logic.dao.PlaceDao
 import com.example.sunnyweather.logic.network.SunnyWeatherNetwork
 import com.example.sunnyweather.logic.model.Place
 import com.example.sunnyweather.logic.model.Weather
@@ -35,8 +36,9 @@ object Repository {
             if (realtimeResponse.status == "ok" && dailyResponse.status == "ok") {
                 val weather = Weather(
                     realtimeResponse.result.realtime,
-                    dailyResponse.result.daily)
-                Result.success (weather)
+                    dailyResponse.result.daily
+                )
+                Result.success(weather)
             } else {
                 Result.failure(
                     RuntimeException(
@@ -46,6 +48,10 @@ object Repository {
             }
         }
     }
+
+    fun savePlace(place: Place) = PlaceDao.savePlace(place)
+    fun getSavedPlace() = PlaceDao.getSavedPlace()
+    fun isPlaceSaved() = PlaceDao.isPlaceSaved()
 
     private fun <T> fire(context: CoroutineContext, block: suspend () -> Result<T>) =
         liveData<Result<T>>(context) {
